@@ -1,0 +1,4 @@
+A small PWM driver for a fan, running on an STM32F103 bluepill with Mecrisp's usb firmware.
+
+Includes hardware drivers from Jeelabs' embello library, which seems to have been abandoned.
+
