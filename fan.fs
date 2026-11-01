@@ -7,7 +7,7 @@
 \ <<<core>>>  https://jeelabs.wippler.nl/article/1709d/ jcw said to do this but it fails for me because it resets the uC )
 
 compiletoflash
-
+\ compiletoram
 pc13 constant led
 : led-init omode-pp led io-mode! ;
 : led-on led ioc! ;
@@ -33,20 +33,18 @@ pa2 constant potmeter
 : pot-init ( freq -- )
   imode-adc potmeter io-mode! adc-init
   fan-init ;
-: pot-trouble ( --- ) ( trouble TODO: ms crashes the uC )
-  begin potmeter adc 40 /  fan% 100 ms key? until ;
 
 : pot ( --- )
-  begin potmeter adc 40 / dup . cr fan% 200 ms usb-key? until ;
+  begin pause potmeter adc 40 / dup . cr fan% 200 ms usb-key? until ;
 
 : fan-off 100 fan% ;
 : fan-max 0 fan% ;
 
-( 1000 potmeter-init )
+( 1000 pot-init )
 ( pot )
 
-\ Tried something with unattended, but not succesful, and why bother?
+\ Unattended run: call the original init 
 
-: init init 1000 pot-init  pot ;
+ : init init pause 500 pot-init  pot ;
 
 compiletoram
