@@ -26,16 +26,18 @@ pb0 constant fan
 	 100 * fan pwm
        else
 	 drop
+	 ." Skipped" cr
        then ; 
 
 pa2 constant potmeter
 
 : pot-init ( freq -- )
   imode-adc potmeter io-mode! adc-init
-  fan-init ;
+  fan-init
+  led-init ;
 
 : pot ( --- )
-  begin pause potmeter adc 40 / dup . cr fan% 200 ms usb-key? until ;
+  begin led-on potmeter adc 40 / dup . cr fan% ." ." led-off 50 ms led-on ." o"  key? until ;
 
 : fan-off 100 fan% ;
 : fan-max 0 fan% ;
@@ -45,6 +47,6 @@ pa2 constant potmeter
 
 \ Unattended run: call the original init 
 
- : init init pause 500 pot-init  pot ;
+: init init  500 pot-init  unattended pot ;
 
 compiletoram

@@ -4,6 +4,9 @@
 compiletoflash
 ( board start: ) here dup hex.
 
+4 constant io-ports
+
+
 #include flib-mecrisp-hexdump.fs
 #include flib-stm32f1-io.fs
 #include flib-stm32f1-hal.fs
@@ -19,30 +22,30 @@ compiletoflash
 \ deal with a missing definition, needed by adc.fs, possibly others
 [ifndef] RCC-AHBENR  RCC $14 + constant RCC-AHBENR  [then]
 
-#include flib-stm32f1-clock.fs
+\ #include flib-stm32f1-clock.fs
 #include flib-pkg-pins64.fs
-#include flib-stm32f1-spi.fs
+\ #include flib-stm32f1-spi.fs
 #include flib-stm32f1-timer.fs
 #include flib-stm32f1-pwm.fs
 #include flib-stm32f1-adc.fs
-#include flib-stm32f1-rtc.fs
+\ #include flib-stm32f1-rtc.fs
 
 \ 10 constant I2C.DELAY
 \ #include flib-any-i2c-bb.fs
 
 \ 1 constant OLED.LARGE  \ display size: 0 = 128x32, 1 = 128x64 (default)
 
-: hello ( -- ) flash-kb . ." KB <g6u> " hwid hex.
+: hello ( -- ) flash-kb . ." KB <PWM> " hwid hex.
   $10000 compiletoflash here -  flashvar-here compiletoram here -
   ." ram/flash: " . . ." free " ;
 
 : init ( -- )  \ board initialisation
-  init  \ this is essential to start up USB comms!
+\  init  \ this is essential to start up USB comms!
   ['] ct-irq irq-fault !  \ show call trace in unhandled exceptions
   jtag-deinit  \ disable JTAG, we only need SWD
+  72MHz
   1000 systick-hz
   hello ." ok." cr
 ;
 
-cornerstone <<<board>>>
 hello
